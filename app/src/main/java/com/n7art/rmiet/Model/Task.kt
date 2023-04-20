@@ -4,11 +4,11 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.util.Calendar
 
-class Task(_name: String, _text: String, _subjects: String, _date: Calendar): Parcelable {
-    var name: String
-    var text: String
-    var subject: String
-    var date: Calendar
+class Task(_name: String, _text: String, _subjects: String, _date: Calendar) : Parcelable {
+    var name: String = ""
+    var text: String = ""
+    var subject: String = ""
+    var date: Calendar = Calendar.getInstance()
 
     init {
         name = _name
@@ -17,6 +17,7 @@ class Task(_name: String, _text: String, _subjects: String, _date: Calendar): Pa
         date = _date
     }
 
+    constructor() : this("", "", "", Calendar.getInstance())
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,

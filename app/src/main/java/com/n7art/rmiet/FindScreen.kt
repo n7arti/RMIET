@@ -1,20 +1,23 @@
 package com.n7art.rmiet
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
@@ -43,6 +46,8 @@ fun FindScreen(navController: NavController) {
     val groupsList = getGroupList(groups)
     val teachersList = getTeacherList(groups)
     var findList by remember { mutableStateOf(groupsList) }
+    var showDropdown by remember { mutableStateOf(false) }
+    val isFocusedFind = remember { mutableStateOf(false) }
     Box(contentAlignment = Alignment.BottomCenter) {
         Column(
             modifier = Modifier
@@ -77,7 +82,12 @@ fun FindScreen(navController: NavController) {
                 modifier = Modifier
                     .padding(10.dp, 15.dp, 10.dp, 10.dp)
                     .fillMaxWidth()
-                    .fillMaxHeight(0.065f)
+                    .fillMaxHeight(0.07f)
+                    .onFocusChanged {
+                        isFocusedFind.value = it.isFocused
+                        Log.i("CLICK", it.isFocused.toString())
+                        showDropdown = it.isFocused
+                    }
             )
             Row(
                 modifier = Modifier
@@ -129,15 +139,28 @@ fun FindScreen(navController: NavController) {
                         }
                 )
             }
-            LazyColumn() {
-                itemsIndexed(
-                    findList
-                ) { index, item ->
-                    Text(item)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            DropdownMenu(modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .fillMaxHeight(0.5f),
+                expanded = showDropdown,
+                onDismissRequest = { showDropdown = true }) {
+                findList.forEach { option ->
+                    DropdownMenuItem(onClick = {
+                        find = option
+                        showDropdown = false
+                    }) {
+                        Text(option)
+                    }
                 }
             }
-            FindButtonToFind()
         }
+        FindButtonToFind()
     }
 }
 
@@ -152,7 +175,9 @@ fun getTeacherList(groups: List<Group>): List<String> {
             for (day: Day in week.DayToList())
                 for (lesson: Lesson in day.LessonToList())
                     if (lesson != null && !lesson.teacher.contains("Преподаватель") && !teachersList.contains(
-                            lesson.teacher))
+                            lesson.teacher
+                        )
+                    )
                         teachersList.add(lesson.teacher)
     return teachersList
 }
