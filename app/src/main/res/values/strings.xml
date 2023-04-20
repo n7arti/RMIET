@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">RMIET</string>
+    <string name="tasks">задачи</string>
+    <string name="schedule">расписание</string>
+    <string name="new_task">новая задача</string>
+    <string name="password">Пароль</string>
+    <string name="login">Логин</string>
+    <string name="auth">Авторизоваться</string>
+</resources>
