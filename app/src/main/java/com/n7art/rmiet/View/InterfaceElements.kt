@@ -13,14 +13,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Card
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -30,6 +24,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -39,12 +34,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.n7art.rmiet.Controller.Screen
 import com.n7art.rmiet.Model.*
 import io.github.boguszpawlowski.composecalendar.StaticCalendar
 import java.text.SimpleDateFormat
@@ -57,6 +54,114 @@ private val centurygothic = FontFamily(
 )
 
 @Composable
+fun Auth(navController: NavController) {
+    var login by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    val isFocusedLogin = remember { mutableStateOf(false) }
+    val isFocusedPassword = remember { mutableStateOf(false) }
+    var passwordVisibility by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    Column(
+        modifier = Modifier
+            .background(colorResource(R.color.orioks))
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        OutlinedTextField(
+            value = login,
+            onValueChange = { login = it },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {}
+            ),
+            textStyle = TextStyle(fontSize = 16.sp, fontFamily = centurygothic),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.White, // цвет при получении фокуса
+                unfocusedBorderColor = Color.White, // цвет при отсутствии фокуса
+                backgroundColor = Color.White,
+                textColor = Color.Black,
+                cursorColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                errorLabelColor = Color.Black,
+                focusedLabelColor = Color.Black,
+                unfocusedLabelColor = Color.Black
+            ),
+            label = {
+                if (!isFocusedLogin.value && login.isEmpty()) Text(
+                    text = "Логин",
+                    fontSize = 16.sp,
+                    fontFamily = centurygothic,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.alpha(0.5f)
+                )
+            },
+            modifier = Modifier
+                .onFocusChanged { isFocusedLogin.value = it.isFocused }
+        )
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            textStyle = TextStyle(fontSize = 16.sp, fontFamily = centurygothic),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.White, // цвет при получении фокуса
+                unfocusedBorderColor = Color.White, // цвет при отсутствии фокуса
+                backgroundColor = Color.White,
+                textColor = Color.Black,
+                cursorColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                errorLabelColor = Color.Black,
+                focusedLabelColor = Color.Black,
+                unfocusedLabelColor = Color.Black
+            ),
+            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                IconButton(
+                    onClick = { passwordVisibility = !passwordVisibility },
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            if (passwordVisibility) R.drawable.visibility
+                            else R.drawable.visibility_off
+                        ),
+                        contentDescription = if (passwordVisibility) "Hide password" else "Show password"
+                    )
+                }
+            },
+            label = {
+                if (!isFocusedPassword.value && login.isEmpty())
+                    Text(
+                        "Пароль",
+                        fontSize = 16.sp,
+                        fontFamily = centurygothic,
+                        fontWeight = FontWeight.Normal,
+                        modifier = Modifier.alpha(0.5f)
+                    )
+            },
+            modifier = Modifier
+                .onFocusChanged { isFocusedPassword.value = it.isFocused }
+        )
+        Button(
+            onClick = {
+                onLoginClick(login, password, navController, context)
+            },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.White,
+                contentColor = Color.Black
+            ),
+            modifier = Modifier
+                .offset(0.dp, 10.dp)
+                .fillMaxHeight(0.07f),
+        ) {
+            Text(stringResource(R.string.auth), fontSize = 16.sp, fontFamily = centurygothic)
+        }
+    }
+}
+
+@Composable
 fun Header(name: String, group: String) {
     //вычисление инициалов
     val words = name.split(" ")
@@ -65,7 +170,7 @@ fun Header(name: String, group: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.08f),
+            .fillMaxHeight(0.09f),
         shape = RectangleShape,
         elevation = 10.dp
     ) {
@@ -110,8 +215,8 @@ fun Header(name: String, group: String) {
                 //квадрат в правом верхнем углу
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth(0.5f)
                         .fillMaxHeight(0.5f)
+                        .aspectRatio(1f, true)
                         .background(Color.White),
                     verticalArrangement = Arrangement.Top
 
@@ -264,12 +369,12 @@ fun TaskButton(navController: NavController, alpha: Float) {
 }
 
 @Composable
-fun FindButton(navController: NavController){
+fun FindButton(navController: NavController) {
     Box(
         modifier = Modifier
             .offset(0.dp, 30.dp)
             .background(colorResource(R.color.orioks), CircleShape)
-            .fillMaxWidth(0.27f)
+            .fillMaxHeight(0.14f)
             .aspectRatio(1f, true)
             .clickable {
                 navController.navigate(Screen.Find.route) {
@@ -294,7 +399,7 @@ fun FindButton(navController: NavController){
 }
 
 @Composable
-fun FindButtonToFind(){
+fun FindButtonToFind() {
     Box(
         modifier = Modifier
             .offset(0.dp, 30.dp)
@@ -311,7 +416,7 @@ fun FindButtonToFind(){
                 .offset(0.dp, -15.dp),
             painter = painterResource(R.drawable.search_active),
             contentDescription = "search",
-            )
+        )
     }
 }
 
@@ -373,14 +478,6 @@ fun TaskInfo(task: Task) {
             )
         }
         StaticCalendar()
-//        DropdownMenu(
-//            expanded = false,
-//            onDismissRequest = { false }
-//        ) {
-//            Text("Математическое моделирование", fontSize=18.sp, modifier = Modifier.padding(10.dp).clickable(onClick={}))
-//            Text("Вставить", fontSize=18.sp, modifier = Modifier.padding(10.dp).clickable(onClick={}))
-//            Text("Настройки", fontSize=18.sp, modifier = Modifier.padding(10.dp).clickable(onClick={}))
-//        }
     }
 
 }
@@ -426,8 +523,20 @@ fun Tasks(tasks: List<Task>, navController: NavController) {
             Card(
                 modifier = Modifier
                     .clickable {
-                        Log.i("TASK",item.name+" "+item.text+" "+item.subject+" "+item.date)
-                        navController.navigate("taskinfo/${Task(item.name,item.text,item.subject,item.date)}")
+                        Log.i(
+                            "TASK",
+                            item.name + " " + item.text + " " + item.subject + " " + item.date
+                        )
+                        navController.navigate(
+                            "taskinfo/${
+                                Task(
+                                    item.name,
+                                    item.text,
+                                    item.subject,
+                                    item.date
+                                )
+                            }"
+                        )
                     }
                     .fillMaxWidth(),
                 shape = RectangleShape
@@ -446,8 +555,6 @@ fun Tasks(tasks: List<Task>, navController: NavController) {
                     {
                         Text(
                             day.format(item.date.time) + "." + month.format(item.date.time),
-                            //item.date.toString(),
-                            //item.date.get(Calendar.DAY_OF_MONTH).toString()+"."+item.date.get(Calendar.DAY_OF_WEEK_IN_MONTH).toString(),
                             fontSize = 25.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = centurygothic,
@@ -621,7 +728,6 @@ fun Body(week: String, selectedDay: LocalDate) {
         }
     }
 }
-
 
 fun Modifier.bottomBorder(strokeWidth: Dp, color: Color, alpha: Float) = composed(
     factory = {

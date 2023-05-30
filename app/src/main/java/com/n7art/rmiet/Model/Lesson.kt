@@ -16,8 +16,9 @@ class Lesson(_name: String, _teacher: String, _classroom: String) {
         teacher = _teacher
         classroom = _classroom
     }
+
     @Composable
-    fun Output(){
+    fun Output() {
         Column(
             modifier = Modifier
                 .fillMaxSize(),

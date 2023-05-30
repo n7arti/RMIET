@@ -1,4 +1,4 @@
-package com.n7art.rmiet
+package com.n7art.rmiet.Controller
 
 sealed class Screen(val route: String){
     object Schedule: Screen(route = "schedule")

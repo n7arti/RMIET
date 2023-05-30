@@ -105,11 +105,12 @@ fun DayView(
                     if (isSelected) colorResource(R.color.orioks) else Color.Transparent,
                     CircleShape
                 )
-                .aspectRatio(1f)
                 .clickable {
                     onSelected()
                     onDaySelected(index)
-                },
+                }
+                .fillMaxWidth(0.065f)
+                .aspectRatio(1f),
             contentAlignment = Alignment.Center
         ) {
             Text(

@@ -7,8 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.n7art.rmiet.Model.Task
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Composable
 fun TaskInfoScreen(navController: NavController, task: Task?) {

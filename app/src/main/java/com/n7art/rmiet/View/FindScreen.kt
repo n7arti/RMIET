@@ -3,10 +3,7 @@ package com.n7art.rmiet
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,8 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -32,8 +27,7 @@ import androidx.navigation.NavController
 import com.n7art.rmiet.Model.*
 
 private val centurygothic = FontFamily(
-    Font(R.font.century_gothic_regular),
-    Font(R.font.century_gothic_bold, FontWeight.Bold)
+    Font(R.font.century_gothic_regular), Font(R.font.century_gothic_bold, FontWeight.Bold)
 )
 
 @Composable
@@ -55,8 +49,7 @@ fun FindScreen(navController: NavController) {
                 .background(colorResource(R.color.orioks)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextField(
-                value = find,
+            OutlinedTextField(value = find,
 
                 onValueChange = { newText ->
                     find = newText.replaceFirstChar {
@@ -64,12 +57,9 @@ fun FindScreen(navController: NavController) {
                     }
                 },
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Go,
-                    capitalization = KeyboardCapitalization.Words
+                    imeAction = ImeAction.Go, capitalization = KeyboardCapitalization.Words
                 ),
-                keyboardActions = KeyboardActions(
-                    onGo = {}
-                ),
+                keyboardActions = KeyboardActions(onGo = {}),
                 textStyle = TextStyle(fontSize = 16.sp, fontFamily = centurygothic),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color.White, // цвет при получении фокуса
@@ -87,15 +77,11 @@ fun FindScreen(navController: NavController) {
                         isFocusedFind.value = it.isFocused
                         Log.i("CLICK", it.isFocused.toString())
                         showDropdown = it.isFocused
-                    }
-            )
+                    })
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Text(
-                    "группа",
+                Text("группа",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = centurygothic,
@@ -107,10 +93,8 @@ fun FindScreen(navController: NavController) {
                             alphat = 0.7f
                             alphaw = 0.7f
                             findList = groupsList
-                        }
-                )
-                Text(
-                    "преподаватель",
+                        })
+                Text("преподаватель",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = centurygothic,
@@ -122,10 +106,8 @@ fun FindScreen(navController: NavController) {
                             alphat = 1f
                             alphaw = 0.7f
                             findList = teachersList
-                        }
-                )
-                Text(
-                    "окно",
+                        })
+                Text("окно",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = centurygothic,
@@ -136,14 +118,11 @@ fun FindScreen(navController: NavController) {
                             alphag = 0.7f
                             alphat = 0.7f
                             alphaw = 1f
-                        }
-                )
+                        })
             }
         }
         Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
         ) {
             DropdownMenu(modifier = Modifier
                 .fillMaxWidth(0.8f)
@@ -170,14 +149,11 @@ fun getGroupList(groups: List<Group>): List<String> {
 
 fun getTeacherList(groups: List<Group>): List<String> {
     val teachersList: MutableList<String> = mutableListOf()
-    for (group: Group in groups)
-        for (week: Week in group.schedule.WeekToList())
-            for (day: Day in week.DayToList())
-                for (lesson: Lesson in day.LessonToList())
-                    if (lesson != null && !lesson.teacher.contains("Преподаватель") && !teachersList.contains(
-                            lesson.teacher
-                        )
-                    )
-                        teachersList.add(lesson.teacher)
+    for (group: Group in groups) for (week: Week in group.schedule.WeekToList()) for (day: Day in week.DayToList()) for (lesson: Lesson in day.LessonToList()) if (lesson != null && !lesson.teacher.contains(
+            "Преподаватель"
+        ) && !teachersList.contains(
+            lesson.teacher
+        )
+    ) teachersList.add(lesson.teacher)
     return teachersList
 }

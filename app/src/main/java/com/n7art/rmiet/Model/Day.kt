@@ -18,6 +18,7 @@ class Day(_lesson1: Lesson, _lesson2: Lesson, _lesson3: Lesson, _lesson4: Lesson
         lesson6 = _lesson6
         lesson7 = _lesson7
     }
+
     fun LessonToList(): List<Lesson> {
         return listOf(lesson1, lesson2, lesson3, lesson4, lesson5, lesson6, lesson7)
     }

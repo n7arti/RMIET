@@ -12,7 +12,8 @@ class Schedule(_ch1: Week, _z1: Week, _ch2: Week, _z2: Week) {
         this.ch2 = _ch2
         this.z2 = _z2
     }
+
     fun WeekToList(): List<Week> {
-        return listOf(ch1,z1,ch2,z2)
+        return listOf(ch1, z1, ch2, z2)
     }
 }

@@ -1,10 +1,10 @@
 package com.n7art.rmiet.Model
 
-class Group(_name: String, _schedule: Schedule)  {
+class Group(_name: String, _schedule: Schedule) {
     var name: String
     var schedule: Schedule
 
-    init{
+    init {
         name = _name;
         schedule = _schedule;
     }

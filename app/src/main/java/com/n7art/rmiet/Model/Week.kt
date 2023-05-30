@@ -16,7 +16,8 @@ class Week(_mon: Day, _tue: Day, _wed: Day, _thu: Day, _fri: Day, _sat: Day) {
         fri = _fri
         sat = _sat
     }
+
     fun DayToList(): List<Day> {
-        return listOf(mon,tue,wed,thu,fri,sat)
+        return listOf(mon, tue, wed, thu, fri, sat)
     }
 }
